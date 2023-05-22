@@ -1,24 +1,32 @@
 const express = require('express')
+const mongoose = require('mongoose')
 const articleRouter = require('./routes/articles')
 const app = express()
 
+mongoose.connect('mongodb://127.0.0.1:/blog', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+
 app.set('view engine', 'ejs')
 
-app.use('/articles', articleRouter)
+app.use(express.urlencoded({  extended: false }))
 
 app.get('/', (req, res) => {
     const articles = [{
         title: 'Test Title',
-        createdAt: Date.now(),
+        createdAt: new Date(),
         description: 'Test description'
     },{
         title: 'Test Title 2',
-        createdAt: Date.now(),
+        createdAt: new Date(),
         description: 'Test description 2'
     }]
-    res.render('index', {
+    res.render('articles/index', {
         articles: articles
     })
 })
 
 app.listen(5000)
+
+app.use('/articles', articleRouter)
